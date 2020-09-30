@@ -3,7 +3,7 @@ import * as webpack from 'webpack';
 
 const prefixCache: { [x: string]: string } = {};
 
-function applyPrefix(prefix: string, snippet: string) {
+export function applyPrefix(prefix: string, snippet: string) {
   if (prefixCache[snippet]) return prefixCache[snippet];
 
   let result = snippet;
