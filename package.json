@@ -1,6 +1,6 @@
 {
   "name": "tailwind-classname-prefix-loader",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Prefix to classnames to avoid CSS cross contamination",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

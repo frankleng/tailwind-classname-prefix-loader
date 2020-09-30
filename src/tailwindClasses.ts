@@ -1,5 +1,5 @@
 // credit: https://github.com/vesper8/vue-tailwind-prefix-applicator/blob/master/src/views/tailwind-classes.js
-export default [
+const tailwindClasses = [
   '-m-05',
   '-m-1',
   '-m-1/12',
@@ -3744,3 +3744,11 @@ export default [
   'z-50',
   'z-auto',
 ];
+
+const classDict: { [x: string]: boolean } = {};
+tailwindClasses.forEach((n) => {
+  classDict[n] = true;
+});
+export const tailwindClassDict = classDict;
+
+export default tailwindClasses;
