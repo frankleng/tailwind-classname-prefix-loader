@@ -48,6 +48,7 @@ workflows:
             tags:
               only: /^v.*/
       - deploy:
+          context: NPM_PUBLISH
           requires:
             - test
           filters:
