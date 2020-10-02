@@ -2,6 +2,7 @@ import tailwindClasses from './tailwindClasses';
 import * as webpack from 'webpack';
 
 const prefixCache: { [x: string]: string } = {};
+const dynamicClassNameRegex = /_useCssPrefix.*=*\{([^}]+)\}|cx\(.+\)/gim;
 
 export function applyPrefix(prefix: string, snippet: string) {
   if (prefixCache[snippet]) return prefixCache[snippet];
@@ -21,6 +22,16 @@ export function applyPrefix(prefix: string, snippet: string) {
   return result;
 }
 
+function processContent(matches: RegExpMatchArray | null, prefix: string, content: string) {
+  if (matches) {
+    for (const match of matches) {
+      const prefixed = applyPrefix(prefix, match);
+      content = content.replace(match, prefixed);
+    }
+  }
+  return content;
+}
+
 function loader(this: webpack.loader.LoaderContext, content: string) {
   const { prefix, attrs } = this.query;
   let classNameAttrs = ['className'];
@@ -36,10 +47,12 @@ function loader(this: webpack.loader.LoaderContext, content: string) {
   const classNamesMatches = content.match(classMatchRegex);
 
   if (classNamesMatches) {
-    for (const match of classNamesMatches) {
-      const prefixed = applyPrefix(prefix, match);
-      content = content.replace(match, prefixed);
-    }
+    content = processContent(classNamesMatches, prefix, content);
+  }
+
+  const dynamicClassMatches = content.match(dynamicClassNameRegex);
+  if (dynamicClassMatches) {
+    content = processContent(dynamicClassMatches, prefix, content);
   }
 
   return content;
