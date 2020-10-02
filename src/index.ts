@@ -28,7 +28,11 @@ function loader(this: webpack.loader.LoaderContext, content: string) {
     classNameAttrs = classNameAttrs.concat(attrs);
   }
 
-  const classMatchRegex = new RegExp(`(${classNameAttrs.join('|')})=\"(.+)\"`, 'gim');
+  const classMatchRegex = new RegExp(
+    `(?=<[^>]+(?=[\\s+\\"\\'](${classNameAttrs.join('|')})=(.*)[\\s+\\"\\']).+)([^>]+>)`,
+    'gim',
+  );
+
   const classNamesMatches = content.match(classMatchRegex);
 
   if (classNamesMatches) {
@@ -37,6 +41,7 @@ function loader(this: webpack.loader.LoaderContext, content: string) {
       content = content.replace(match, prefixed);
     }
   }
+
   return content;
 }
 
