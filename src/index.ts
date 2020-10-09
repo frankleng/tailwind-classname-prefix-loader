@@ -39,22 +39,16 @@ function loader(this: webpack.loader.LoaderContext, content: string) {
     classNameAttrs = classNameAttrs.concat(attrs);
   }
 
-  const classMatchRegex = new RegExp(
-    `(?=<[^>]+(?=[\\s+\\"\\'](${classNameAttrs.join('|')})=(.*)[\\s+\\"\\']).+)([^>]+>)`,
-    'gim',
-  );
-
-  const classNamesMatches = content.match(classMatchRegex);
-
-  if (classNamesMatches) {
-    content = processContent(classNamesMatches, prefix, content);
+  const reactRegex = new RegExp(`(${classNameAttrs.join('|')})\\s*=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^'"]+)['"]`);
+  const reactMatches = content.match(reactRegex);
+  if (reactMatches || content.includes('/* ADD_CSS_PREFIX_TO_FILE */')) {
+    content = applyPrefix(prefix, content);
+  } else {
+    const dynamicClassMatches = content.match(dynamicClassNameRegex);
+    if (dynamicClassMatches) {
+      content = processContent(dynamicClassMatches, prefix, content);
+    }
   }
-
-  const dynamicClassMatches = content.match(dynamicClassNameRegex);
-  if (dynamicClassMatches) {
-    content = processContent(dynamicClassMatches, prefix, content);
-  }
-
   return content;
 }
 
