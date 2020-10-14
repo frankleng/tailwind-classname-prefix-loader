@@ -3743,6 +3743,8 @@ const tailwindClasses = [
   'z-40',
   'z-50',
   'z-auto',
+  'animate-spin',
+  'spin-fast',
 ];
 
 const classDict: { [x: string]: boolean } = {};
