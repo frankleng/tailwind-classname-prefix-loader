@@ -33,16 +33,18 @@ function processContent(matches: RegExpMatchArray | null, prefix: string, conten
 }
 
 function loader(this: webpack.loader.LoaderContext, content: string) {
-  const { prefix, attrs } = this.query;
-  let classNameAttrs = ['className'];
+  const { prefix, attrs, debug } = this.query;
+  let classNameAttrs = ['className', 'cx'];
   if (attrs) {
     classNameAttrs = classNameAttrs.concat(attrs);
   }
 
-  const reactRegex = new RegExp(`(${classNameAttrs.join('|')})\\s*=(?:["']\\W+\\s*(?:\\w+)\\()?["']([^'"]+)['"]`);
+  const reactRegex = new RegExp(`(${classNameAttrs.join('|')})\\s*(=|\\(|{|{\`)(?:["'{]\\W+\\s*(?:\\w+)\\()*`, 'igm');
   const reactMatches = content.match(reactRegex);
   if (reactMatches || content.includes('/* ADD_CSS_PREFIX_TO_FILE */')) {
+    if (debug) console.log(reactMatches);
     content = applyPrefix(prefix, content);
+    if (debug) console.log(content);
   } else {
     const dynamicClassMatches = content.match(dynamicClassNameRegex);
     if (dynamicClassMatches) {
